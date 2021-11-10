@@ -128,15 +128,15 @@ class back_order_with_restock_date
         $availabileClass = 'available-on-backorder';
         $restockDate = (empty(get_post_meta($post->ID, '_product_restock_date_field', true)) ? 0 : date('m/d/Y', strtotime(get_post_meta($post->ID, '_product_restock_date_field', true))));
 
-        if ((in_array($availability['availability'], $stockBackOrder) ||
-            in_array(get_post_meta($post->ID, '_stock_status', true), $stockBackOrder))) {
+        if(! $availability['class'] === 'in-stock') {
+            echo apply_filters('woocommerce_stock_html', '<p class="stock ' . esc_attr($availability['class']) . '">' .
+                esc_html($availability['availability']) . ($restockDate > 0 ? '<br/><span>Restock date: ' . $restockDate . ' </span>' : '') . '</p>', $availability['availability']);
+        }
+        else {
             echo apply_filters('woocommerce_stock_html', '<p class="stock ' . $availabileClass . '">' .
                 $availabile .
                 (!empty(get_post_meta($post->ID, '_product_restock_date_field', true)) ? '<br/><span>Restock date: ' . $restockDate . ' </span>' : '') .
                 '</p>', $availability['availability']);
-        } else if(! $availability['class'] === 'in-stock') {
-            echo apply_filters('woocommerce_stock_html', '<p class="stock ' . esc_attr($availability['class']) . '">' .
-                esc_html($availability['availability']) . ($restockDate > 0 ? '<br/><span>Restock date: ' . $restockDate . ' </span>' : '') . '</p>', $availability['availability']);
         }
     }
 
